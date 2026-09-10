@@ -2,34 +2,52 @@
 
 # OpenCite
 
-**Tamper-evident, rights-aware citations for humans and AI.**
+**A public memory of every book—for humans and AI.**
 
 [![CI](https://github.com/sharziki/opencite/actions/workflows/ci.yml/badge.svg)](https://github.com/sharziki/opencite/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-10110f.svg)](LICENSE)
 [![No token](https://img.shields.io/badge/token-none-9cff57.svg)](#why-blockchain)
 [![Privacy: local hashing](https://img.shields.io/badge/files-local--only-10110f.svg)](#privacy-and-rights)
 
-[Quick start](#quick-start) · [How it works](#how-it-works) · [Trust model](#trust-model) · [Contributing](CONTRIBUTING.md)
+[Thesis](#the-thesis) · [Quick start](#quick-start) · [How it works](#how-it-works) · [Trust model](#trust-model) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
 ![OpenCite interface](docs/opencite-interface.png)
 
-AI increasingly answers questions without exposing the exact evidence behind an answer. Web pages change, files disappear, and citations can silently point at different bytes tomorrow.
+## The thesis
 
-OpenCite creates a portable proof for a source file:
+AI may become the main way people encounter history. Its source record must not belong to one model provider, government, publisher, or archive.
 
-- SHA-256 digest computed entirely in the browser;
-- deterministic, human-readable citation manifest;
-- optional wallet-signed registration on a public EVM ledger;
-- independent local verification with no OpenCite account or API;
-- explicit rights basis and evidence without uploading source content.
+OpenCite is open infrastructure for a shared historical memory of books. It records exact editions, byte-level fingerprints, independent witnesses, rights declarations, and append-only attestations. Anyone can contribute evidence. Anyone can verify it. No operator gets to silently replace the past.
 
-> OpenCite proves integrity, provenance, and time. It does **not** prove that content is factually true, lawful, safe, complete, or unbiased.
+Historical confidence comes from **converging independent evidence**, not a blockchain vote. A library, publisher, researcher, and reader can each witness the same edition. Agreement strengthens provenance; disagreement remains visible for study instead of being erased.
+
+> OpenCite preserves evidence about what existed. It does **not** declare a book's claims factually true, choose an authoritative edition, or grant copyright permission.
+
+Read the full [OpenCite thesis](THESIS.md).
+
+## What OpenCite records
+
+Each portable witness manifest can describe:
+
+- book title, creator, publication date, edition, and bibliographic identifier;
+- exact SHA-256 fingerprint of a lawfully held or inspected copy;
+- witness type and public evidence, such as a library catalog record;
+- source location and declared rights basis;
+- optional wallet-signed registration on a public EVM ledger.
+
+Book bytes are hashed locally and never uploaded to OpenCite. Public-domain archives may mirror works separately; copyrighted copies remain with lawful custodians.
+
+## Why this matters for AI
+
+An AI system can cite an OpenCite manifest to identify the exact edition behind an answer. A verifier can then detect changed bytes, changed metadata, revoked attestations, and conflicts between witnesses without trusting OpenCite's website or database.
+
+This creates a missing layer between preservation and AI: **portable, machine-readable evidence about sources**.
 
 ## Demo
 
-The app works offline without a contract. Blockchain registration appears when `VITE_REGISTRY_ADDRESS` points to a deployed `OpenCiteRegistry`.
+The app creates and verifies manifests offline. Blockchain registration appears when `VITE_REGISTRY_ADDRESS` points to a deployed `OpenCiteRegistry`.
 
 ```bash
 git clone https://github.com/sharziki/opencite.git
@@ -44,8 +62,8 @@ Open <http://127.0.0.1:5173>.
 
 ```mermaid
 flowchart LR
-    A[Source file] -->|Web Crypto API| B[SHA-256 digest]
-    M[Citation + rights metadata] --> C[Canonical manifest]
+    A[Book copy] -->|Local SHA-256| B[Exact fingerprint]
+    M[Edition + witness + rights metadata] --> C[Canonical manifest]
     B --> C
     C --> D[Downloadable proof]
     C -->|Optional wallet transaction| E[OpenCiteRegistry]
@@ -54,11 +72,11 @@ flowchart LR
     E --> F
 ```
 
-1. Contributor chooses a local source file and enters citation metadata.
-2. Browser hashes source bytes; the file is never sent to OpenCite.
+1. Contributor lawfully holds or inspects a book copy and identifies its edition.
+2. Browser or CLI hashes its bytes locally; the file is never sent to OpenCite.
 3. App creates a canonical manifest and hashes that manifest.
-4. Contributor downloads the manifest or registers both digests on-chain.
-5. Any verifier recomputes the digest and checks the public record.
+4. Contributor publishes the manifest and may register both digests on-chain.
+5. Other witnesses repeat the process; independent agreement or conflict remains inspectable.
 
 ## Quick start
 
@@ -67,6 +85,23 @@ flowchart LR
 ```bash
 npm install
 npm run dev
+```
+
+### Command line
+
+No account, server, or third-party CLI dependency:
+
+```bash
+npm run opencite -- create ./book.epub \
+  --title "Moby-Dick" \
+  --creator "Herman Melville" \
+  --publication-date "1851" \
+  --edition "First edition" \
+  --identifier "OCLC 123" \
+  --source-url "https://archive.example/moby-dick" \
+  --rights "PUBLIC-DOMAIN"
+
+npm run opencite -- verify ./book.epub ./book.epub.opencite.json
 ```
 
 ### Full verification
@@ -87,7 +122,7 @@ Open <http://127.0.0.1:4173>. Container exposes `/healthz` for readiness checks.
 
 ## Smart contract
 
-`OpenCiteRegistry.sol` stores:
+`OpenCiteRegistry.sol` stores a minimal immutable anchor:
 
 | Field | Purpose |
 | --- | --- |
@@ -121,13 +156,13 @@ For Sepolia, copy `.env.example`, export `RPC_URL` and `DEPLOYER_PRIVATE_KEY`, t
 
 ## Why blockchain?
 
-Blockchain has one narrow job here: make attestations difficult for a single operator to alter or remove after publication. It does not store documents and does not decide truth.
+Blockchain has one narrow job: prevent one operator from quietly altering or deleting attestation history. It does not store books and does not decide truth.
 
 OpenCite deliberately has:
 
 - no token;
 - no paid verification;
-- no DAO or popularity vote over truth;
+- no DAO, AI model, or popularity vote over truth;
 - no proprietary index required for local verification.
 
 The architecture follows lessons from [Sigstore Rekor](https://github.com/sigstore/rekor) for append-only provenance, [Ethereum Attestation Service](https://github.com/ethereum-attestation-service/eas-contracts) for general attestations, [OpenTimestamps](https://github.com/opentimestamps/opentimestamps-client) for independently verifiable time proofs, and [C2PA](https://github.com/contentauth/c2pa-rs) for content provenance. OpenCite stays smaller: one manifest, one registry, one verifier.
@@ -149,11 +184,11 @@ The architecture follows lessons from [Sigstore Rekor](https://github.com/sigsto
 - source URL will remain available;
 - blockchain timestamp equals original publication date.
 
-Trust comes from evidence and accountable attesters—not hash length.
+Trust comes from inspectable evidence, independent witnesses, and accountable attesters—not hash length. Multiple attestations can agree on one fingerprint or preserve conflicts between editions and witnesses.
 
 ## Privacy and rights
 
-OpenCite's browser verifier reads local files only to compute their digest. There is no upload endpoint or analytics service. On-chain registration publishes source URL, license declaration, wallet address, and both hashes permanently.
+OpenCite's browser verifier and CLI read local files only to compute their digest. There is no upload endpoint or analytics service. On-chain registration publishes source URL, license declaration, wallet address, and both hashes permanently.
 
 Do not register private URLs, personal information, access tokens, pirated download locations, or metadata you cannot lawfully publish. A hash-only citation does not authorize copying or distributing the underlying work. See [SECURITY.md](SECURITY.md).
 
@@ -166,35 +201,44 @@ Manifests follow [`schema/source-manifest-v1.schema.json`](schema/source-manifes
 ```json
 {
   "citation": {
-    "creator": "Example Institute",
-    "sourceUrl": "https://example.org/report.pdf",
-    "title": "Example report"
+    "creator": "Herman Melville",
+    "sourceUrl": "https://archive.example/moby-dick",
+    "title": "Moby-Dick"
+  },
+  "bibliography": {
+    "edition": "First edition",
+    "identifier": "OCLC 123",
+    "publicationDate": "1851"
   },
   "content": {
     "byteLength": 12842,
-    "filename": "report.pdf",
-    "mediaType": "application/pdf",
+    "filename": "moby-dick.epub",
+    "mediaType": "application/epub+zip",
     "sha256": "0x…"
   },
   "provenance": {
-    "claim": "This record attests to source integrity and provenance. It does not establish factual truth.",
+    "claim": "This record preserves evidence of a witnessed source. It does not establish factual truth.",
     "createdAt": "2026-09-10T12:00:00.000Z",
     "generator": "OpenCite/0.1.0"
   },
   "rights": {
-    "basis": "CC-BY-4.0",
-    "evidence": "https://example.org/license"
+    "basis": "PUBLIC-DOMAIN",
+    "evidence": null
   },
   "schema": "https://github.com/sharziki/opencite/blob/main/schema/source-manifest-v1.schema.json",
-  "version": 1
+  "version": 1,
+  "witness": {
+    "evidence": "https://library.example/catalog/123",
+    "kind": "PHYSICAL-COPY"
+  }
 }
 ```
 
 ## Project status
 
-OpenCite is an alpha reference implementation. Current scope covers local hashing, deterministic manifests, file verification, registry deployment, wallet registration, lookup, and revocation.
+OpenCite is an alpha reference implementation. Current scope covers book and edition metadata, witness evidence, browser and CLI hashing, deterministic manifests, local verification, registry deployment, wallet registration, lookup, and revocation.
 
-Before production use, complete an independent contract audit, establish a stable deployment and domain, add decentralized source availability, and define institution-level identity attestations.
+Next proof of usefulness: publish a small, lawful pilot collection with one library or open-access archive and connect manifest citations to an AI retrieval pipeline. Before production use, complete an independent contract audit, establish a stable deployment and domain, add institution-level identity attestations, and design discovery across independent registries.
 
 ## Contributing
 
@@ -202,9 +246,9 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md). Useful first contributions:
 
 - test manifest generation in more browsers;
 - improve accessibility and translation;
-- create adapters for AI citation formats;
+- create adapters for AI retrieval and citation formats;
 - add optional OpenTimestamps proofs;
-- design library and publisher identity attestations.
+- contribute public-domain edition manifests and library catalog witnesses.
 
 ## License
 

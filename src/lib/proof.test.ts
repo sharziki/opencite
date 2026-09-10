@@ -30,11 +30,18 @@ describe("OpenCite proof utilities", () => {
         creator: "Example Institute",
         sourceUrl: "https://example.org/source",
         license: "CC0-1.0",
+        publicationDate: "1851",
+        edition: "First edition",
+        identifier: "OCLC 123456",
+        witnessKind: "PHYSICAL-COPY",
+        witnessEvidence: "https://example.org/catalog/123456",
       },
       "2026-09-10T12:00:00.000Z",
     );
 
     expect(parseManifest(JSON.stringify(manifest))).toEqual(manifest);
+    expect(manifest.bibliography?.publicationDate).toBe("1851");
+    expect(manifest.witness?.kind).toBe("PHYSICAL-COPY");
   });
 
   it("rejects unrecognized JSON", () => {
@@ -59,5 +66,23 @@ describe("OpenCite proof utilities", () => {
     expect(() => parseManifest(JSON.stringify(manifest))).toThrow(
       "Not a supported OpenCite manifest.",
     );
+  });
+
+  it("rejects malformed historical witness metadata", async () => {
+    const contentHash = await hashText("source");
+    const manifest = createManifest(
+      { name: "source.txt", type: "text/plain", size: 6 },
+      contentHash,
+      {
+        title: "Source",
+        creator: "Publisher",
+        sourceUrl: "https://example.org/source",
+        license: "PUBLIC-DOMAIN",
+      },
+    );
+
+    expect(() =>
+      parseManifest(JSON.stringify({ ...manifest, witness: null })),
+    ).toThrow("Not a supported OpenCite manifest.");
   });
 });

@@ -243,6 +243,89 @@ footer a:hover {
   line-height: 1.55;
 }
 
+.thesis {
+  padding: 110px 32px;
+  border-bottom: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+
+.thesis > * {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.thesis .section-kicker {
+  display: block;
+  color: var(--signal);
+}
+
+.thesis h2 {
+  margin-top: 28px;
+  margin-bottom: 70px;
+  font-size: clamp(3rem, 7vw, 7.5rem);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.92;
+}
+
+.thesis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9vw;
+  padding-top: 28px;
+  border-top: 1px solid #454640;
+}
+
+.thesis-grid p {
+  margin: 0 0 20px;
+  color: #b9bbb2;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.thesis-grid .thesis-lead {
+  color: var(--white);
+  font-size: clamp(1.25rem, 2vw, 1.85rem);
+  line-height: 1.45;
+}
+
+.archive-chain {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 70px;
+  margin-bottom: 0;
+  padding: 0;
+  border: 1px solid #454640;
+  list-style: none;
+}
+
+.archive-chain li {
+  min-width: 0;
+  padding: 18px;
+  border-right: 1px solid #454640;
+}
+
+.archive-chain li:last-child {
+  border-right: 0;
+}
+
+.archive-chain span,
+.archive-chain small {
+  display: block;
+  color: #898b83;
+  font: 400 10px var(--mono);
+  text-transform: uppercase;
+}
+
+.archive-chain strong {
+  display: block;
+  margin: 42px 0 8px;
+  color: var(--signal);
+  font-size: 0.95rem;
+}
+
 .workspace {
   padding: 100px 32px 120px;
 }
@@ -672,6 +755,18 @@ footer > div {
     grid-template-columns: 1fr;
   }
 
+  .archive-chain {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .archive-chain li:nth-child(3) {
+    border-right: 0;
+  }
+
+  .archive-chain li:nth-child(-n + 3) {
+    border-bottom: 1px solid #454640;
+  }
+
   .principles article {
     min-height: auto;
     border-right: 0;
@@ -698,6 +793,7 @@ footer > div {
 
 @media (max-width: 620px) {
   .site-header,
+  .thesis,
   .workspace,
   .verify-section,
   footer {
@@ -743,9 +839,33 @@ footer > div {
   }
 
   .field-grid,
+  .thesis-grid,
+  .archive-chain,
   .result-actions,
   .boundary {
     grid-template-columns: 1fr;
+  }
+
+  .thesis {
+    padding-block: 72px;
+  }
+
+  .thesis h2 {
+    margin-bottom: 48px;
+  }
+
+  .archive-chain li,
+  .archive-chain li:nth-child(3) {
+    border-right: 0;
+    border-bottom: 1px solid #454640;
+  }
+
+  .archive-chain li:last-child {
+    border-bottom: 0;
+  }
+
+  .archive-chain strong {
+    margin-top: 20px;
   }
 
   .panel {

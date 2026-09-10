@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Tamper-evident, rights-aware citations for humans and AI.",
+  "description": "Public, tamper-evident memory for books and AI.",
+  "bin": {
+    "opencite": "bin/opencite.js"
+  },
   "license": "MIT",
   "engines": {
     "node": ">=22"
@@ -13,6 +16,7 @@
     "build": "npm run typecheck && vite build",
     "build:web": "vite build",
     "preview": "vite preview --host 0.0.0.0",
+    "opencite": "node bin/opencite.js",
     "typecheck": "hardhat compile && tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.json --noEmit",
     "test": "npm run test:unit && npm run test:contracts",
     "test:unit": "vitest run",

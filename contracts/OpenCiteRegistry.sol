@@ -2,8 +2,8 @@
 pragma solidity ^0.8.34;
 
 /// @title OpenCite Registry
-/// @notice Append-only provenance attestations for source documents.
-/// @dev Stores hashes and citation metadata, never source document bytes.
+/// @notice Append-only provenance attestations for witnessed book editions and other sources.
+/// @dev Stores hashes and minimal citation metadata, never book or source bytes.
 contract OpenCiteRegistry {
     uint256 public constant MAX_URI_LENGTH = 512;
     uint256 public constant MAX_LICENSE_LENGTH = 96;

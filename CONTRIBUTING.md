@@ -1,6 +1,6 @@
 # Contributing to OpenCite
 
-OpenCite welcomes focused contributions that improve source integrity, provenance, accessibility, privacy, or interoperability.
+OpenCite welcomes focused contributions that improve the public provenance record of books: edition identity, source integrity, witness evidence, accessibility, privacy, or AI interoperability.
 
 ## Before opening code
 
@@ -8,6 +8,8 @@ OpenCite welcomes focused contributions that improve source integrity, provenanc
 2. Open an issue for behavior changes or protocol changes.
 3. Keep pull requests small and explain the trust-boundary impact.
 4. Never include copyrighted source files, credentials, private RPC URLs, or wallet keys.
+
+Book records should link only to lawful public sources or catalog evidence. Hashes and metadata do not authorize distributing a work.
 
 Typo fixes, documentation corrections, tests, and accessibility improvements can go directly to a pull request.
 

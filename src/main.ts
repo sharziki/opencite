@@ -120,11 +120,15 @@ createForm.addEventListener("submit", async (event) => {
   try {
     const sourceUrl = String(data.get("sourceUrl"));
     const rightsEvidence = String(data.get("rightsEvidence") || "");
+    const witnessEvidence = String(data.get("witnessEvidence") || "");
     if (new URL(sourceUrl).protocol !== "https:") {
       throw new Error("Canonical source URL must use HTTPS.");
     }
     if (rightsEvidence && new URL(rightsEvidence).protocol !== "https:") {
       throw new Error("Rights evidence URL must use HTTPS.");
+    }
+    if (witnessEvidence && new URL(witnessEvidence).protocol !== "https:") {
+      throw new Error("Witness evidence URL must use HTTPS.");
     }
 
     const contentHash = await hashFile(file);
@@ -134,6 +138,15 @@ createForm.addEventListener("submit", async (event) => {
       sourceUrl,
       license: String(data.get("license")),
       rightsEvidence,
+      publicationDate: String(data.get("publicationDate") || ""),
+      edition: String(data.get("edition") || ""),
+      identifier: String(data.get("identifier") || ""),
+      witnessKind: String(data.get("witnessKind")) as
+        | "DIGITAL-COPY"
+        | "PHYSICAL-COPY"
+        | "CATALOG-RECORD"
+        | "OTHER",
+      witnessEvidence,
     });
     const canonicalManifest = canonicalize(manifest);
     const manifestText = `${canonicalManifest}\n`;

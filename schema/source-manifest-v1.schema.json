@@ -29,6 +29,25 @@
         "sourceUrl": { "type": "string", "format": "uri" }
       }
     },
+    "bibliography": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicationDate", "edition", "identifier"],
+      "properties": {
+        "publicationDate": { "type": ["string", "null"] },
+        "edition": { "type": ["string", "null"] },
+        "identifier": { "type": ["string", "null"] }
+      }
+    },
+    "witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "evidence"],
+      "properties": {
+        "kind": { "enum": ["DIGITAL-COPY", "PHYSICAL-COPY", "CATALOG-RECORD", "OTHER"] },
+        "evidence": { "type": ["string", "null"], "format": "uri" }
+      }
+    },
     "rights": {
       "type": "object",
       "additionalProperties": false,
