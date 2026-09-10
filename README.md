@@ -9,7 +9,7 @@
 [![No token](https://img.shields.io/badge/token-none-9cff57.svg)](#why-blockchain)
 [![Privacy: local hashing](https://img.shields.io/badge/files-local--only-10110f.svg)](#privacy-and-rights)
 
-[Thesis](#the-thesis) · [Quick start](#quick-start) · [How it works](#how-it-works) · [Trust model](#trust-model) · [Contributing](CONTRIBUTING.md)
+[Thesis](#the-thesis) · [Pilot archive](#pilot-archive) · [Quick start](#quick-start) · [Trust model](#trust-model) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -44,6 +44,28 @@ Book bytes are hashed locally and never uploaded to OpenCite. Public-domain arch
 An AI system can cite an OpenCite manifest to identify the exact edition behind an answer. A verifier can then detect changed bytes, changed metadata, revoked attestations, and conflicts between witnesses without trusting OpenCite's website or database.
 
 This creates a missing layer between preservation and AI: **portable, machine-readable evidence about sources**.
+
+## Pilot archive
+
+The repository ships a searchable pilot of 25 Project Gutenberg editions. During ingestion, OpenCite reads Project Gutenberg's OPDS metadata, accepts only records explicitly marked `Public domain in the USA`, downloads one EPUB edition temporarily, hashes its exact bytes, and writes a manifest plus discovery index. EPUB bytes are discarded and never committed.
+
+Pilot manifests are reproducible but currently unsigned and not registered on a public chain. They prove the ingestion and discovery workflow; independent institutional witnesses remain the next milestone.
+
+![OpenCite pilot archive](docs/opencite-archive.png)
+
+Every archive card can:
+
+- open the lawful source landing page;
+- download the portable witness manifest;
+- copy an AI-ready citation containing exact content and manifest hashes.
+
+Rebuild the collection:
+
+```bash
+npm run archive:build-pilot
+```
+
+Rights determinations are territorial. Project Gutenberg states that its copyright analysis follows United States law and users elsewhere must check local law. See its [permission guidance](https://www.gutenberg.org/policy/permission) and [terms of use](https://www.gutenberg.org/policy/terms_of_use.html).
 
 ## Demo
 
@@ -238,7 +260,7 @@ Manifests follow [`schema/source-manifest-v1.schema.json`](schema/source-manifes
 
 OpenCite is an alpha reference implementation. Current scope covers book and edition metadata, witness evidence, browser and CLI hashing, deterministic manifests, local verification, registry deployment, wallet registration, lookup, and revocation.
 
-Next proof of usefulness: publish a small, lawful pilot collection with one library or open-access archive and connect manifest citations to an AI retrieval pipeline. Before production use, complete an independent contract audit, establish a stable deployment and domain, add institution-level identity attestations, and design discovery across independent registries.
+The first lawful pilot contains 25 witnessed Project Gutenberg editions and AI-ready citation exports. Next proof of usefulness: obtain an independent second witness from a library or open-access archive. Before production use, complete an independent contract audit, establish a stable deployment and domain, add institution-level identity attestations, and design discovery across independent registries.
 
 ## Contributing
 

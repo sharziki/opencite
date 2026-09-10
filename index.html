@@ -25,6 +25,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#thesis">Thesis</a>
+        <a href="#archive">Archive</a>
         <a href="#verify">Verify</a>
         <a href="https://github.com/sharziki/opencite">GitHub ↗</a>
       </nav>
@@ -93,6 +94,30 @@
           <li><span>04</span><strong>Fingerprint</strong><small>exact bytes, locally hashed</small></li>
           <li><span>05</span><strong>Attestation</strong><small>append-only public history</small></li>
         </ol>
+      </section>
+
+      <section class="archive" id="archive" aria-labelledby="archive-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">PUBLIC-DOMAIN PILOT / 25 RECORDS</span>
+            <h2 id="archive-title">Browse exact editions</h2>
+          </div>
+          <p>
+            Each record fingerprints one Project Gutenberg EPUB marked public domain in the USA.
+            Book files are never stored here.
+          </p>
+        </div>
+        <div class="archive-toolbar">
+          <label for="archive-search">Search title, author, or identifier</label>
+          <input id="archive-search" type="search" placeholder="Try Austen, Dracula, or #1342" />
+          <span id="archive-count" aria-live="polite">Loading archive…</span>
+        </div>
+        <p class="archive-status" id="archive-status" role="status" aria-live="polite"></p>
+        <div class="archive-grid" id="archive-grid"></div>
+        <p class="archive-rights">
+          Rights status is territorial. Project Gutenberg's determination applies to the United
+          States; verify local law before downloading or redistributing any edition.
+        </p>
       </section>
 
       <section class="workspace" id="create" aria-labelledby="workspace-title">

@@ -17,6 +17,7 @@
     "build:web": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "opencite": "node bin/opencite.js",
+    "archive:build-pilot": "node scripts/build-pilot.mjs",
     "typecheck": "hardhat compile && tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.json --noEmit",
     "test": "npm run test:unit && npm run test:contracts",
     "test:unit": "vitest run",

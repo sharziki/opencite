@@ -8,6 +8,8 @@ import {
   verifyFile,
 } from "./lib/proof";
 import type { SourceManifest } from "./lib/proof";
+import { aiCitation, filterArchive, parseArchiveIndex } from "./lib/archive";
+import type { ArchiveRecord } from "./lib/archive";
 import {
   connectRegistry,
   lookupSource,
@@ -66,6 +68,10 @@ const verifyForm = element<HTMLFormElement>("verify-form");
 const verifyStatus = element<HTMLElement>("verify-status");
 const lookupForm = element<HTMLFormElement>("lookup-form");
 const lookupStatus = element<HTMLElement>("lookup-status");
+const archiveSearch = element<HTMLInputElement>("archive-search");
+const archiveCount = element<HTMLElement>("archive-count");
+const archiveGrid = element<HTMLElement>("archive-grid");
+const archiveStatus = element<HTMLElement>("archive-status");
 
 let connection: RegistryConnection | null = null;
 let lastVerification:
@@ -78,6 +84,77 @@ let currentProof:
       manifestHash: string;
     }
   | undefined;
+let archiveRecords: ArchiveRecord[] = [];
+
+function archiveCard(record: ArchiveRecord): HTMLElement {
+  const card = document.createElement("article");
+  card.className = "archive-card";
+
+  const index = document.createElement("span");
+  index.className = "card-index";
+  index.textContent = record.identifier;
+  const title = document.createElement("h3");
+  title.textContent = record.title;
+  const creator = document.createElement("p");
+  creator.className = "archive-creator";
+  creator.textContent = record.creator;
+  const edition = document.createElement("p");
+  edition.className = "archive-edition";
+  edition.textContent = record.edition;
+  const hash = document.createElement("code");
+  hash.title = record.contentHash;
+  hash.textContent = `SHA-256 ${shorten(record.contentHash, 14, 12)}`;
+
+  const actions = document.createElement("div");
+  actions.className = "archive-actions";
+  const source = document.createElement("a");
+  source.href = record.sourceUrl;
+  source.target = "_blank";
+  source.rel = "noreferrer";
+  source.textContent = "Source ↗";
+  const manifest = document.createElement("a");
+  manifest.href = record.manifestUrl;
+  manifest.textContent = "Manifest ↓";
+  const copy = document.createElement("button");
+  copy.type = "button";
+  copy.textContent = "Copy AI citation";
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(aiCitation(record, window.location.origin));
+      copy.textContent = "Copied ✓";
+      window.setTimeout(() => (copy.textContent = "Copy AI citation"), 1800);
+    } catch {
+      archiveStatus.dataset.kind = "error";
+      archiveStatus.textContent = "Clipboard access failed. Open the manifest to copy its citation.";
+    }
+  });
+  actions.append(source, manifest, copy);
+  card.append(index, title, creator, edition, hash, actions);
+  return card;
+}
+
+function renderArchive(query = ""): void {
+  const records = filterArchive(archiveRecords, query);
+  archiveGrid.replaceChildren(...records.map(archiveCard));
+  archiveCount.textContent = `${records.length} of ${archiveRecords.length} edition records`;
+  archiveStatus.textContent = records.length ? "" : "No matching witnessed edition.";
+}
+
+async function loadArchive(): Promise<void> {
+  try {
+    const response = await fetch("/archive/index.json");
+    if (!response.ok) throw new Error(`Archive returned ${response.status}.`);
+    archiveRecords = parseArchiveIndex(await response.json());
+    renderArchive();
+  } catch (error) {
+    archiveCount.textContent = "Archive unavailable";
+    archiveStatus.dataset.kind = "error";
+    archiveStatus.textContent = errorMessage(error);
+  }
+}
+
+archiveSearch.addEventListener("input", () => renderArchive(archiveSearch.value));
+void loadArchive();
 
 if (!registryAddress) {
   chainNote.textContent = "Offline mode: configure VITE_REGISTRY_ADDRESS to enable registration.";
