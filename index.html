@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10110f" />
+    <meta
+      name="description"
+      content="Create and verify tamper-evident, rights-aware citations for humans and AI."
+    />
+    <meta property="og:title" content="OpenCite — Verifiable source provenance" />
+    <meta
+      property="og:description"
+      content="Citations that cannot be quietly rewritten. Open source and privacy-first."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>OpenCite — Verifiable source provenance</title>
+  </head>
+  <body>
+    <div class="page-grid" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="OpenCite home">
+        <span class="brand-mark">O/C</span>
+        <span>OpenCite</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#protocol">Protocol</a>
+        <a href="#verify">Verify</a>
+        <a href="https://github.com/sharziki/opencite">GitHub ↗</a>
+      </nav>
+      <button class="wallet-button" id="wallet-button" type="button">
+        <span class="wallet-dot" aria-hidden="true"></span>
+        <span id="wallet-label">Connect wallet</span>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="eyebrow"><span>OPEN PROTOCOL / V0.1</span><span>AI FOR PUBLIC GOOD</span></div>
+        <h1 id="hero-title">Citations that cannot be quietly rewritten.</h1>
+        <div class="hero-bottom">
+          <p>
+            Hash a source locally. Record its provenance on a public ledger.
+            Give people and AI a citation anyone can independently verify.
+          </p>
+          <a class="primary-link" href="#create">Create a proof <span>↓</span></a>
+        </div>
+      </section>
+
+      <section class="principles" id="protocol" aria-label="Protocol principles">
+        <article>
+          <span class="principle-number">01</span>
+          <h2>Private by default</h2>
+          <p>Files are hashed in your browser. Document bytes never reach OpenCite.</p>
+        </article>
+        <article>
+          <span class="principle-number">02</span>
+          <h2>Evidence, not truth</h2>
+          <p>Proof establishes integrity, provenance, and time—not whether a claim is true.</p>
+        </article>
+        <article>
+          <span class="principle-number">03</span>
+          <h2>Open verification</h2>
+          <p>No account or proprietary API. Verify locally using open code and public data.</p>
+        </article>
+      </section>
+
+      <section class="workspace" id="create" aria-labelledby="workspace-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">WORKSPACE</span>
+            <h2 id="workspace-title">Create source proof</h2>
+          </div>
+          <p>Nothing uploads. Your browser computes every digest locally.</p>
+        </div>
+
+        <div class="workspace-grid">
+          <form class="panel form-panel" id="create-form">
+            <div class="panel-header">
+              <span>01 / SOURCE</span>
+              <span class="privacy-badge">LOCAL ONLY</span>
+            </div>
+
+            <label class="drop-zone" for="source-file" id="drop-zone">
+              <input id="source-file" name="sourceFile" type="file" required />
+              <span class="drop-icon" aria-hidden="true">＋</span>
+              <strong id="file-label">Choose source file</strong>
+              <span id="file-detail">PDF, text, image, or dataset · max 100 MB</span>
+            </label>
+
+            <div class="field-grid">
+              <label>
+                <span>Title</span>
+                <input name="title" required maxlength="180" placeholder="The original source title" />
+              </label>
+              <label>
+                <span>Author / institution</span>
+                <input name="creator" required maxlength="180" placeholder="Who published it?" />
+              </label>
+            </div>
+
+            <label>
+              <span>Canonical source URL</span>
+              <input
+                name="sourceUrl"
+                type="url"
+                required
+                maxlength="512"
+                placeholder="https://example.org/source"
+              />
+            </label>
+
+            <div class="field-grid">
+              <label>
+                <span>Rights basis</span>
+                <select name="license" required>
+                  <option value="">Select rights</option>
+                  <option value="PUBLIC-DOMAIN">Public domain</option>
+                  <option value="CC0-1.0">CC0 1.0</option>
+                  <option value="CC-BY-4.0">CC BY 4.0</option>
+                  <option value="CC-BY-SA-4.0">CC BY-SA 4.0</option>
+                  <option value="RIGHTSHOLDER-PERMISSION">Rights-holder permission</option>
+                  <option value="HASH-ONLY">Hash-only citation</option>
+                </select>
+              </label>
+              <label>
+                <span>Rights evidence <em>optional</em></span>
+                <input
+                  name="rightsEvidence"
+                  type="url"
+                  maxlength="512"
+                  placeholder="https://example.org/license"
+                />
+              </label>
+            </div>
+
+            <label class="checkbox-row">
+              <input name="rightsConfirmed" type="checkbox" required />
+              <span>I am not uploading the work, bypassing access controls, or misrepresenting its rights.</span>
+            </label>
+
+            <button class="action-button" type="submit" id="create-button">
+              <span>Generate proof</span><span aria-hidden="true">→</span>
+            </button>
+            <p class="form-status" id="create-status" role="status" aria-live="polite"></p>
+          </form>
+
+          <aside class="panel result-panel" aria-labelledby="proof-heading">
+            <div class="panel-header">
+              <span>02 / PROOF</span>
+              <span id="proof-state">WAITING</span>
+            </div>
+            <div class="empty-proof" id="empty-proof">
+              <div class="fingerprint" aria-hidden="true"></div>
+              <h3 id="proof-heading">No proof generated</h3>
+              <p>Select a source and add citation metadata. Its fingerprint will appear here.</p>
+            </div>
+            <div class="proof-output" id="proof-output" hidden>
+              <div class="verified-mark" aria-hidden="true">✓</div>
+              <div>
+                <span class="result-label">CONTENT SHA-256</span>
+                <code id="content-hash"></code>
+              </div>
+              <div>
+                <span class="result-label">MANIFEST SHA-256</span>
+                <code id="manifest-hash"></code>
+              </div>
+              <div class="result-actions">
+                <button class="secondary-button" id="download-button" type="button">Download manifest</button>
+                <button class="action-button" id="register-button" type="button">
+                  <span>Register on-chain</span><span>↗</span>
+                </button>
+              </div>
+              <p class="chain-note" id="chain-note"></p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="verify-section" id="verify" aria-labelledby="verify-title">
+        <div class="section-heading inverted">
+          <div>
+            <span class="section-kicker">INDEPENDENT CHECK</span>
+            <h2 id="verify-title">Verify without trusting us</h2>
+          </div>
+          <p>Recompute source digest locally or inspect an on-chain attestation.</p>
+        </div>
+
+        <div class="verify-grid">
+          <form class="verify-card" id="verify-form">
+            <span class="card-index">A / FILE</span>
+            <h3>Compare source to manifest</h3>
+            <label><span>Source file</span><input name="verifySource" type="file" required /></label>
+            <label><span>OpenCite manifest</span><input name="verifyManifest" type="file" accept="application/json,.json" required /></label>
+            <button class="light-button" type="submit">Verify file integrity →</button>
+            <p id="verify-status" class="verify-status" role="status" aria-live="polite"></p>
+          </form>
+
+          <form class="verify-card" id="lookup-form">
+            <span class="card-index">B / CHAIN</span>
+            <h3>Inspect ledger attestation</h3>
+            <label>
+              <span>Attestation ID</span>
+              <input name="attestationId" required pattern="0x[a-fA-F0-9]{64}" placeholder="0x…" />
+            </label>
+            <button class="light-button" type="submit">Read public record →</button>
+            <p id="lookup-status" class="verify-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="boundary" aria-label="Trust boundary">
+        <p>OpenCite proves <strong>what existed, who attested, and whether it changed.</strong></p>
+        <p>OpenCite does not declare content true, legal, safe, or unbiased.</p>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand footer-brand" href="#top"><span class="brand-mark">O/C</span><span>OpenCite</span></a>
+      <p>Open infrastructure for accountable AI.</p>
+      <div><a href="https://github.com/sharziki/opencite/blob/main/README.md">Docs</a><a href="https://github.com/sharziki/opencite/blob/main/LICENSE">MIT</a></div>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_REGISTRY_ADDRESS: ${VITE_REGISTRY_ADDRESS:-}
+        VITE_CHAIN_ID: ${VITE_CHAIN_ID:-11155111}
+    ports:
+      - "4173:8080"
+    restart: unless-stopped

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sharziki/opencite/blob/main/schema/source-manifest-v1.schema.json",
+  "title": "OpenCite source manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "content", "citation", "rights", "provenance"],
+  "properties": {
+    "schema": { "const": "https://github.com/sharziki/opencite/blob/main/schema/source-manifest-v1.schema.json" },
+    "version": { "const": 1 },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "mediaType", "byteLength", "sha256"],
+      "properties": {
+        "filename": { "type": "string" },
+        "mediaType": { "type": "string" },
+        "byteLength": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^0x[a-f0-9]{64}$" }
+      }
+    },
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "creator", "sourceUrl"],
+      "properties": {
+        "title": { "type": "string" },
+        "creator": { "type": "string" },
+        "sourceUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis", "evidence"],
+      "properties": {
+        "basis": { "type": "string" },
+        "evidence": { "type": ["string", "null"], "format": "uri" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["createdAt", "generator", "claim"],
+      "properties": {
+        "createdAt": { "type": "string", "format": "date-time" },
+        "generator": { "const": "OpenCite/0.1.0" },
+        "claim": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "opencite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tamper-evident, rights-aware citations for humans and AI.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run typecheck && vite build",
+    "build:web": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "typecheck": "hardhat compile && tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.json --noEmit",
+    "test": "npm run test:unit && npm run test:contracts",
+    "test:unit": "vitest run",
+    "test:contracts": "hardhat test",
+    "contract:compile": "hardhat compile",
+    "contract:node": "hardhat node",
+    "contract:deploy:local": "hardhat compile && RPC_URL=http://127.0.0.1:8545 node scripts/deploy.ts",
+    "contract:deploy:sepolia": "hardhat compile && node scripts/deploy.ts",
+    "contract:smoke": "node scripts/smoke.ts"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.5",
+    "hardhat": "3.16.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.0",
+    "vitest": "^4.1.4"
+  }
+}
